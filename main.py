@@ -70,26 +70,29 @@ class LoadWrite:
         row = 0
         last_msg = ''
         while not self.stop_thread:
-            chat = pytchat.create(video_id=video_id, interruptable=False)
-            while chat.is_alive():
-                if self.stop_thread == True:
-                    break
-                data = chat.get()
-                for item in data.items:
+            try:
+                chat = pytchat.create(video_id=video_id, interruptable=False)
+                while chat.is_alive():
                     if self.stop_thread == True:
                         break
-                    time = item.datetime[10:-3]
-                    user = item.author.name
-                    msg  = item.message.strip()
-                    text = f"{time} [{user}] - {msg}"
-                    if text == last_msg:
-                        continue
-                    else:
-                        last_msg = text
-                        row  += 1
-                        self.worksheet.write_row(row, 0, (user, msg), self.fmt_msg)
-                        window['_COUNT_'].update(row)
-                        print(text)
+                    data = chat.get()
+                    for item in data.items:
+                        if self.stop_thread == True:
+                            break
+                        time = item.datetime[10:-3]
+                        user = item.author.name
+                        msg  = item.message.strip()
+                        text = f"{time} [{user}] - {msg}"
+                        if text == last_msg:
+                            continue
+                        else:
+                            last_msg = text
+                            row  += 1
+                            self.worksheet.write_row(row, 0, (user, msg), self.fmt_msg)
+                            window['_COUNT_'].update(row)
+                            print(text)
+            except Exception:
+                pass    
             print('Conexão perdida. Tentando novamente em 1 segundo...')
             sleep(1)
 
