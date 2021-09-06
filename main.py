@@ -31,8 +31,9 @@ class LoadWrite:
         self.saveas_path = saveas_path
         self.workbook = xlsxwriter.Workbook(self.saveas_path)
         self.worksheet = self.workbook.add_worksheet('Live Chat')
-        self.worksheet.set_column(0, 0, 20)
-        self.worksheet.set_column(1, 1, 60)
+        self.worksheet.set_column(0, 0, 5.5)
+        self.worksheet.set_column(1, 1, 20)
+        self.worksheet.set_column(2, 2, 60)
         self.fmt_title = self.workbook.add_format({
             'bold'       : True,
             'align'      : 'center',
@@ -52,10 +53,8 @@ class LoadWrite:
     def write_title(self):
         """Write a stylish title"""
         
-        titles = ['Usuário', 'Comentário']
-        row = 0
-        for col, content in enumerate(titles):
-            self.worksheet.write(row, col, content, self.fmt_title)
+        titles = ['Hora', 'Usuário', 'Comentário']        
+        self.worksheet.write_row(0, 0, titles, self.fmt_title)
 
         return
 
@@ -88,7 +87,7 @@ class LoadWrite:
                         else:
                             last_msg = text
                             row  += 1
-                            self.worksheet.write_row(row, 0, (user, msg), self.fmt_msg)
+                            self.worksheet.write_row(row, 0, [time, user, msg], self.fmt_msg)
                             window['_COUNT_'].update(row)
                             print(text)
             except Exception:
